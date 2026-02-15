@@ -1,2 +1,91 @@
+<!--
+ * @Author: FunctionSir
+ * @License: AGPLv3
+ * @Date: 2026-02-15 12:36:30
+ * @LastEditTime: 2026-02-15 13:23:34
+ * @LastEditors: FunctionSir
+ * @Description: -
+ * @FilePath: /quieter-r730xd/README.md
+-->
 # quieter-r730xd
+
 Make your R730xd quieter.
+
+让你的R730xd安静一点儿.
+
+## Why
+
+We know that the default minimal fan speed of R730xd is 35% PWM, that's not a big deal in a datacenter, but it's a little bit of noisy for home.
+
+我们知道, R730xd默认的最小风扇速度是35% PWM, 这在数据中心里问题不大, 但是对于家庭而言, 确实有些吵闹.
+
+This script try to control the fan speed in a customizable, quieter method.
+
+这个脚本试图通过一种更可定制, 且更安静的方式来控制风扇速度.
+
+## ATTENTION ! 注意
+
+BEFORE YOU START TO USE THIS SCRIPT, CHECK IT AGAIN!
+
+在您使用该脚本之前, 请再次检查一遍!
+
+THIS IS ONLY TESTED WITH THE AUTHOR'S OWN DEVICE!
+
+这个脚本只在作者自己的设备上测试过!
+
+DESIGNED FOR DELL POWEREDGE R730XD WITH PERC H730 MINI ONLY!
+
+仅针对带有PERC H730 MINI RAID卡的POWEREDGE R730XD服务器设计!
+
+HIGH TEMPERATURE MIGHT CAUSE A EMERGENCY SHUTDOWN, OR EVEN DAMAGE YOUR HARDWARE!
+
+高温可能导致紧急关机, 甚至损坏你的硬件!
+
+THIS SOFTWARE COMES WITH ABSOLUTELY NO WARRANTY, TO THE EXTENT PERMITTED BY APPLICABLE LAW! (the English version cited from Debian, slightly modified)
+
+本软件不提供任何保证, 在法律许可的范围内. (英文版本引用自Debian, 并做了轻微的修改)
+
+YOU HAVE ALREADY BE WARNED!
+
+您已经收到过警告了!
+
+## Use And Do NOT Use
+
+Use it when:
+
+- You put your server at home.
+- The load of your server will not changing rapidly.
+- No any extra PCIE cards enabled, like a NVIDIA P100 GPU.
+- You don't care about SLA so much.
+- You are running a Linux system.
+
+您可以使用它, 当:
+
+- 您将服务器放在家里.
+- 您服务器的负载不会快速波动.
+- 您没有启用比如NVIDIA P100 GPU这样的, 任何PCIE扩展卡.
+- 您不那么关心SLA.
+- 您在使用Linux.
+
+DO NOT USE IT WHEN:
+
+- Your server is in a datacenter: sound is not a big deal, and this script have no any powersave functions.
+- The load of your server changing rapidly: the scripts might be too slow for the rapid changed load.
+- You have some PCIE cards enabled: the script only measured the sensors data from IPMI and smartctl, so, the temperature of your cards might be ignored!
+- SLA is really important for you.
+- You are not running a Linux system.
+
+不要使用它, 当:
+
+- 你的服务器在数据中心里: 声音不那么重要, 而且这个脚本没有任何节能功能.
+- 您服务器的负载变化迅速: 这个脚本可能对快速波动的负载来说太慢了.
+- 您有启用一些PCIE扩展卡: 这个脚本只测量来自IPMI和smartctl的传感器读数, 所以, 您的扩展卡的温度可能被忽略.
+- SLA对您来说真的很重要.
+- 您没有在使用Linux.
+
+## Usage
+
+0. Prepare your IPMI, check your IPMI settings. 准备您的IPMI, 检查您的IPMI设置.
+1. Read the script and the service file. 阅读脚本和服务文件.
+2. Put the script and service file, change the config (in the script). 放置脚本和服务文件, 更改配置(在脚本中).
+3. Run / enable the service. 运行/启用服务.

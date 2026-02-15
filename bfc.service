@@ -1,0 +1,11 @@
+[Unit]
+Description=Better Fan Control Service (bfc)
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/python3 -u /opt/bfc.py
+TimeoutStopSec=30s
+
+[Install]
+WantedBy=multi-user.target
