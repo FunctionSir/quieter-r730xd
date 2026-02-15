@@ -4,7 +4,7 @@
 Author: FunctionSir
 License: AGPLv3
 Date: 2026-02-14 23:20:22
-LastEditTime: 2026-02-15 13:04:55
+LastEditTime: 2026-02-15 13:24:49
 LastEditors: FunctionSir
 Description: For DELL R730xd with a PERC H730 Mini RAID card.
 FilePath: /quieter-r730xd/bfc.py
@@ -12,7 +12,7 @@ FilePath: /quieter-r730xd/bfc.py
 
 ####################### !!! ATTENTION !!! #######################
 # BEFORE YOU START TO USE THIS SCRIPT, CHECK IT AGAIN!          #
-# THIS IS ONLY TESTED WITH THE AUTHOR'S OWN DEVICE!            #
+# THIS IS ONLY TESTED WITH THE AUTHOR'S OWN DEVICE!             #
 # DESIGNED FOR DELL POWEREDGE R730XD WITH PERC H730 MINI ONLY!  #
 # YOU HAVE ALREADY BE WARNED!                                   #
 #################################################################
