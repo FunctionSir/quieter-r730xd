@@ -4,7 +4,7 @@
 Author: FunctionSir
 License: AGPLv3
 Date: 2026-02-14 23:20:22
-LastEditTime: 2026-02-15 13:24:49
+LastEditTime: 2026-02-17 18:46:50
 LastEditors: FunctionSir
 Description: For DELL R730xd with a PERC H730 Mini RAID card.
 FilePath: /quieter-r730xd/bfc.py
@@ -31,15 +31,16 @@ DISKS_DEV = "/dev/sda"
 IPMI_USER = "your/user/name"
 IPMI_PASSWD_FILE = "your/passwd/file"
 IPMI_HOST = "xxx.xxx.xxx.xxx"
-OTHER_TEMP_STAGES = [10, 30, 50, 55, 60, 70, 90]
-OTHER_FANS_STAGES = [5, 10, 15, 20, 25, 50, 90]
-DISKS_TEMP_STAGES = [10, 30, 40, 45, 50, 55, 60]
-DISKS_FANS_STAGES = [5, 10, 15, 30, 60, 80, 90]
+OTHER_TEMP_STAGES = [10, 40, 70, 75, 80, 90]
+OTHER_FANS_STAGES = [5, 15, 25, 35, 50, 90]
+DISKS_TEMP_STAGES = [10, 30, 45, 50, 55, 60]
+DISKS_FANS_STAGES = [5, 10, 15, 35, 80, 90]
 INIT_REFRESHING_INTERVAL = 30
 MIN_REFRESHING_INTERVAL = 5
 MAX_REFRESHING_INTERVAL = 65
 TEMP_STD_FOR_REFRESHING_INTERVAL = 5
 REFRESHING_INTERVAL_STEPPING = 1
+TIMES_BEFORE_LOWER_SPEED_CONFIRMED = 2
 ### END OF CONFIG ###
 
 
@@ -189,6 +190,7 @@ def main():
     last_interval = INIT_REFRESHING_INTERVAL
     last_temp_other = None
     last_temp_disks = None
+    got_lower_speed_times = 0
 
     # 2: Main loop.
     while not stop_event.is_set():
@@ -272,22 +274,35 @@ def main():
             auto_flag = False
             last_fan_speed = -1
 
+        fan_speed_set_flag = True
+
         if last_fan_speed != target_speed:
-            ret = ipmi_set_fan_speed(IPMI_USER, IPMI_PASSWD_FILE, IPMI_HOST,
-                                     target_speed)
-            if ret != 0:
-                print(f"[{time.ctime()}] " +
-                      "ERR: Fan speed can not be set! Set to auto mode!")
-                if not auto_flag:
-                    auto_flag = True
-                    ipmi_set_auto_fan(IPMI_USER, IPMI_PASSWD_FILE, IPMI_HOST,
-                                      True)
-            if last_fan_speed != target_speed:
-                print(f"[{time.ctime()}] " +
-                      f"INFO: Temp: O: {cur_other_max_temp}, D: {cur_disks_max_temp}.")
-                print(f"[{time.ctime()}] " +
-                      f"INFO: Fan speed changed: {last_fan_speed}% -> {target_speed}%.")
-            last_fan_speed = target_speed
+            if last_fan_speed > target_speed:
+                if got_lower_speed_times < TIMES_BEFORE_LOWER_SPEED_CONFIRMED:
+                    print(f"[{time.ctime()}] " +
+                          f"INFO: Lower speed can be set, before/needed: {got_lower_speed_times}/" +
+                          f"{TIMES_BEFORE_LOWER_SPEED_CONFIRMED}.")
+                    fan_speed_set_flag = False
+                got_lower_speed_times += 1
+            else:
+                got_lower_speed_times = 0
+
+            if fan_speed_set_flag:
+                ret = ipmi_set_fan_speed(IPMI_USER, IPMI_PASSWD_FILE, IPMI_HOST,
+                                         target_speed)
+                if ret != 0:
+                    print(f"[{time.ctime()}] " +
+                          "ERR: Fan speed can not be set! Set to auto mode!")
+                    if not auto_flag:
+                        auto_flag = True
+                        ipmi_set_auto_fan(IPMI_USER, IPMI_PASSWD_FILE, IPMI_HOST,
+                                          True)
+                if last_fan_speed != target_speed:
+                    print(f"[{time.ctime()}] " +
+                          f"INFO: Temp: O: {cur_other_max_temp}, D: {cur_disks_max_temp}.")
+                    print(f"[{time.ctime()}] " +
+                          f"INFO: Fan speed changed: {last_fan_speed}% -> {target_speed}%.")
+                last_fan_speed = target_speed
 
         new_inertval = refreshing_interval
         if (last_temp_other is not None) and (last_temp_disks is not None):
